@@ -1,11 +1,10 @@
 import numpy as np
 import matplotlib.pyplot as pl
 import pandas as pd
-import h5py
 from scipy.spatial import distance
 from skimage import transform
 from numpy import ravel
-
+import sys
 # Make sure that caffe is on the python path:
 #caffe_root = './caffe/'  # this file is expected to be in {caffe_root}/examples
 #import sys
@@ -15,8 +14,8 @@ import caffe
 
 # Set the right path to your model definition file, pretrained model weights,
 # and the image you would l1ike to classify.
-MODEL_FILE = './facialkp_predict.prototxt'
-PRETRAINED = './tmp_iter_1000.caffemodel'
+MODEL_FILE = './deploy.prototxt'
+PRETRAINED = './model_train_iter_'+ str(sys.argv[1]) + '.caffemodel'
 
 def dist(x,y):   
     #return numpy.sqrt(numpy.sum((x-y)**2))
@@ -74,23 +73,23 @@ print 'Input Data shape: ', data.shape
 print 'Total batches: ', batches
 
 
-net = caffe.Net(MODEL_FILE,PRETRAINED)
-net.set_mode_gpu()
-
+net = caffe.Net(MODEL_FILE,PRETRAINED, caffe.TEST)
+#net.set_mode_cpu()
 
 data4D = np.zeros([max_value,1,96,96],np.float32)
 data4DL = np.zeros([max_value,1,1,1], np.float32)
 
 data4D = X[400:464,:,:,:]
 
-net.set_input_arrays(data4D.astype(np.float32),data4DL.astype(np.float32))
+
+net.set_input_arrays(data4D.astype(np.float32), data4DL.astype(np.float32))
 pred = net.forward()
-ip1 = net.blobs['ip2'].data * 96
+ip1 = net.blobs['fc7'].data * 96
 
 print 'Predicted', ip1
 print 'Shape', ip1.shape
 
-
+'''
 predicted = []
 
 for b in xrange(batches): 
@@ -99,6 +98,7 @@ for b in xrange(batches):
  data4DL = np.zeros([BATCH_SIZE,1,1,1]) # need to create 4D array as output, first value is  batch_size, last number of outputs
  data4D[0:BATCH_SIZE,:] = data[b*BATCH_SIZE:b*BATCH_SIZE+BATCH_SIZE,:] # fill value of input xtrain
 
+ #print " ===> ", data4D
  #predict
  #print [(k, v[0].data.shape) for k, v in net.params.items()]
  net.set_input_arrays(data4D.astype(np.float32),data4DL.astype(np.float32))
@@ -106,6 +106,7 @@ for b in xrange(batches):
  print 'batch ', b, data4D.shape, data4DL.shape
 
  predicted.append(pred['ip2']*96)
+ print pred['ip2']*96
 
 
 predicted = np.asarray(predicted, 'float32')
@@ -117,16 +118,16 @@ print 'Predicted shape: ', predicted.shape
 print 'Saving to csv..'
 
 
-
 np.savetxt("fkp_output.csv", predicted, delimiter=",")
 
-
-for k in xrange(400,412,1):
+for k in xrange(400,401,1):
 
  y = predicted[k]
  print y.reshape(-1,30)
  
  pl.imshow(df['Image'][k].reshape(96,96), cmap='gray' )
  pl.scatter(y[0::2], y[1::2],  marker='x', s=30)
- pl.show()
-
+ pl.savefig("./output/" + str(k) + ".png", dpi=150)
+ pl.close()
+ #pl.show()
+'''

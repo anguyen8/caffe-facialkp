@@ -13,7 +13,6 @@ from numpy import (array, dot, arccos)
 from numpy.linalg import norm
 
 df = pd.read_csv('training.csv',header=0)
-dfp = pd.read_csv('test.csv',header=0)
 
 #calculate the distance features
 

@@ -1,0 +1,2 @@
+1. Run train.sh to train the model
+2. 
