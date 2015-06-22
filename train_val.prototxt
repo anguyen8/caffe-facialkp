@@ -149,66 +149,10 @@ layers {
 }
 
 layers {
-  name: "conv4"
-  type: CONVOLUTION
-  bottom: "conv3"
-  top: "conv4"
-  convolution_param {
-    num_output: 64
-    pad: 1
-    kernel_size: 5
-  
-    weight_filler {
-      type: "gaussian"
-      std: 0.01
-    }
-    bias_filler {
-      type: "constant"
-      value: 1
-    }  
-  }
-}
-
-layers {
-  name: "relu4"
-  type: RELU
-  bottom: "conv4"
-  top: "conv4"
-}
-
-layers {
-  name: "conv5"
-  type: CONVOLUTION
-  bottom: "conv4"
-  top: "conv5"
-  convolution_param {
-    num_output: 32
-    pad: 1
-    kernel_size: 5
-  
-    weight_filler {
-      type: "gaussian"
-      std: 0.01
-    }
-    bias_filler {
-      type: "constant"
-      value: 1
-    }  
-  }
-}
-
-layers {
-  name: "relu5"
-  type: RELU
-  bottom: "conv5"
-  top: "conv5"
-}
-
-layers {
-  name: "pool5"
+  name: "pool3"
   type: POOLING
-  bottom: "conv5"
-  top: "pool5"
+  bottom: "conv3"
+  top: "pool3"
   pooling_param {
     pool: MAX
     kernel_size: 4
@@ -219,7 +163,7 @@ layers {
 layers {
   name: "fc6"
   type: INNER_PRODUCT
-  bottom: "pool5"
+  bottom: "pool3"
   top: "fc6"
   inner_product_param {
     num_output: 100
