@@ -16,7 +16,7 @@ kaggle.py -> writes kaggle output to upload (you have manually edit csv files to
 ```
 python create_dataset.py //run to preapare all data
 ./train.sh //run the caffe trainer
-python output.py // predicts the results and dumps the results in csv
+python run.py // predicts the results and dumps the results in csv
 python kaggle.py // writes the kaggle output to kaggle.csv 
 ```
 #Requirements
